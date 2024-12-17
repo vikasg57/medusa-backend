@@ -1,71 +1,118 @@
-<p align="center">
-  <a href="https://www.medusajs.com">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/59018053/229103275-b5e482bb-4601-46e6-8142-244f531cebdb.svg">
-    <source media="(prefers-color-scheme: light)" srcset="https://user-images.githubusercontent.com/59018053/229103726-e5b529a3-9b3f-4970-8a1f-c6af37f087bf.svg">
-    <img alt="Medusa logo" src="https://user-images.githubusercontent.com/59018053/229103726-e5b529a3-9b3f-4970-8a1f-c6af37f087bf.svg">
-    </picture>
-  </a>
-</p>
-<h1 align="center">
-  Medusa
-</h1>
+# Medusa E-commerce Application
 
-<h4 align="center">
-  <a href="https://docs.medusajs.com">Documentation</a> |
-  <a href="https://www.medusajs.com">Website</a>
-</h4>
+This README provides detailed instructions for setting up and running your Medusa e-commerce application locally.
 
-<p align="center">
-  Building blocks for digital commerce
-</p>
-<p align="center">
-  <a href="https://github.com/medusajs/medusa/blob/master/CONTRIBUTING.md">
-    <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat" alt="PRs welcome!" />
-  </a>
-    <a href="https://www.producthunt.com/posts/medusa"><img src="https://img.shields.io/badge/Product%20Hunt-%231%20Product%20of%20the%20Day-%23DA552E" alt="Product Hunt"></a>
-  <a href="https://discord.gg/xpCwq3Kfn8">
-    <img src="https://img.shields.io/badge/chat-on%20discord-7289DA.svg" alt="Discord Chat" />
-  </a>
-  <a href="https://twitter.com/intent/follow?screen_name=medusajs">
-    <img src="https://img.shields.io/twitter/follow/medusajs.svg?label=Follow%20@medusajs" alt="Follow @medusajs" />
-  </a>
-</p>
+## Prerequisites
 
-## Compatibility
+Ensure you have the following installed on your system:
 
-This starter is compatible with versions >= 1.8.0 of `@medusajs/medusa`. 
+- **Node.js** (version 16 or higher): [Download and install Node.js](https://nodejs.org/)
+- **Yarn** (preferred package manager): Install using `npm install -g yarn`
+- **PostgreSQL**: [Install PostgreSQL](https://www.postgresql.org/)
 
-## Getting Started
+## Steps to Get Started
 
-Visit the [Quickstart Guide](https://docs.medusajs.com/learn) to set up a server.
+### 1. Clone the Repository
+```bash
+git clone https://github.com/vikasg57/medusa-backend.git
+cd medusa-app
+```
 
-Visit the [Docs](https://docs.medusajs.com/learn#get-started) to learn more about our system requirements.
+### 2. Install Dependencies
+```bash
+yarn install
+```
 
-## What is Medusa
+### 4. Configure Environment Variables
 
-Medusa is a set of commerce modules and tools that allow you to build rich, reliable, and performant commerce applications without reinventing core commerce logic. The modules can be customized and used to build advanced ecommerce stores, marketplaces, or any product that needs foundational commerce primitives. All modules are open-source and freely available on npm.
+Create a `.env` file in the root directory and configure the following environment variables:
 
-Learn more about [Medusa’s architecture](https://docs.medusajs.com/learn/advanced-development/architecture/overview) and [commerce modules](https://docs.medusajs.com/learn/basics/commerce-modules) in the Docs.
+```env
+MEDUSA_ADMIN_ONBOARDING_TYPE=default
+STORE_CORS=http://localhost:8000,https://docs.medusajs.com
+ADMIN_CORS=http://localhost:5173,http://localhost:9000,https://docs.medusajs.com
+AUTH_CORS=http://localhost:5173,http://localhost:9000,https://docs.medusajs.com
+REDIS_URL=redis://localhost:6379
+JWT_SECRET=supersecret
+COOKIE_SECRET=supersecret
+DATABASE_URL=DATABASE_URL
+SUPABASE_KEY=SUPABASE_KEY
+SUPABASE_URL=SUPABASE_URL
+PUBLISHABLE_API_KEY=PUBLISHABLE_API_KEY
+MEDUSA_API_KEY=MEDUSA_API_KEY
+MEDUSA_BACKEND_URL=http://localhost:9000
+```
 
-## Roadmap, Upgrades & Plugins
+### 4. Run Migrations
 
-You can view the planned, started and completed features in the [Roadmap discussion](https://github.com/medusajs/medusa/discussions/categories/roadmap).
+Initialize the database by running migrations:
+```bash
+yarn medusa migrations run
+```
 
-Follow the [Upgrade Guides](https://docs.medusajs.com/upgrade-guides/) to keep your Medusa project up-to-date.
+### 5. Create Medusa Admin User
 
-Check out all [available Medusa plugins](https://medusajs.com/plugins/).
+```bash
+npx medusa user -e admin@medusajs.com -p supersecret
+```
 
-## Community & Contributions
 
-The community and core team are available in [GitHub Discussions](https://github.com/medusajs/medusa/discussions), where you can ask for support, discuss roadmap, and share ideas.
+### 6. Seed the Database (Optional)
 
-Join our [Discord server](https://discord.com/invite/medusajs) to meet other community members.
+You can seed the database with demo data for testing:
+```bash
+yarn medusa seed -f ./data/seed.json
+```
 
-## Other channels
+### 7. Start the Medusa Server
+```bash
+yarn start
+```
+The server should now be running at `http://localhost:9000`.
 
-- [GitHub Issues](https://github.com/medusajs/medusa/issues)
-- [Twitter](https://twitter.com/medusajs)
-- [LinkedIn](https://www.linkedin.com/company/medusajs)
-- [Medusa Blog](https://medusajs.com/blog/)
-# medusa-backend
+### 7. Testing the Application
+
+#### Verify Backend
+- Open your browser and navigate to `http://localhost:9000/store/products` to confirm the backend is running correctly.
+
+#### Create a Customer Using Curl
+```bash
+curl -X POST 'http://localhost:9000/store/customers' \  
+-H 'Content-Type: application/json' \  
+-H 'x-publishable-api-key: your-publishable-api-key' \  
+--data-raw '{  
+    "first_name": "John",  
+    "last_name": "Doe",  
+    "email": "johndoe@example.com",  
+    "password": "yourpassword"  
+}'
+```
+## Troubleshooting
+
+### Common Issues
+
+1. **401 Unauthorized**:
+   - Ensure the `x-publishable-api-key` header is correctly set.
+   - Verify the API key in the Medusa Admin dashboard.
+
+2. **Database Connection Errors**:
+   - Confirm your `DATABASE_URL` is correctly configured.
+   - Check that PostgreSQL is running.
+
+3. **Redis Errors**:
+   - If Redis is not used, ensure to remove or comment out the `REDIS_URL` variable in your `.env` file.
+
+### Logs and Debugging
+
+Run the server in debug mode for detailed logs:
+```bash
+DEBUG=medusa:* yarn start
+```
+
+## Additional Resources
+
+- [Medusa Documentation](https://docs.medusajs.com/)
+- [GitHub Repository](https://github.com/medusajs/medusa)
+- [Medusa Discord Community](https://discord.com/invite/medusajs)
+
+Happy coding with Medusa! 🚀
